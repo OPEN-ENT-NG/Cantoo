@@ -1,0 +1,6 @@
+# Optional LibreTranslate settings.
+# See https://github.com/LibreTranslate/LibreTranslate#arguments
+
+# LT_API_KEYS=true
+# LT_REQ_LIMIT=120
+# LT_CHAR_LIMIT=5000

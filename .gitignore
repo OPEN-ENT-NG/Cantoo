@@ -1,0 +1,2 @@
+# Cache temporaire des .git des packages (scripts/forge-git.sh)
+.forge-nested-git/

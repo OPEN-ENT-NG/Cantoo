@@ -1,0 +1,39 @@
+[Unit]
+Description=LibreTranslate WSGI with Gunicorn and Nginx
+After=network.target
+
+[Service]
+User=@INSTALL_USER@
+Group=www-data
+WorkingDirectory=@LIBRE_TRANSLATE_DIR@
+Environment="PATH=@LIBRE_TRANSLATE_DIR@/env/bin"
+Environment=LT_DISABLE_WEB_UI=1
+Environment=LT_CORS_ORIGINS=*
+Environment=OMP_NUM_THREADS=1
+Environment=OPENBLAS_NUM_THREADS=1
+Environment=MKL_NUM_THREADS=1
+Environment=NUMEXPR_NUM_THREADS=1
+Environment=VECLIB_MAXIMUM_THREADS=1
+ExecStart=@LIBRE_TRANSLATE_DIR@/env/bin/gunicorn \
+  --preload \
+  --worker-class gevent \
+  --workers 2 \
+  --worker-connections 50 \
+  --timeout 120 \
+  --graceful-timeout 30 \
+  --keep-alive 5 \
+  --max-requests 200 \
+  --max-requests-jitter 50 \
+  --worker-tmp-dir /dev/shm \
+  --bind unix:libretranslate.sock \
+  -m 007 \
+  wsgi:app
+EnvironmentFile=-@LIBRE_TRANSLATE_DIR@/.env
+Restart=always
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=30
+TasksMax=512
+
+[Install]
+WantedBy=multi-user.target
